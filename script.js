@@ -11,11 +11,11 @@ var c = canvas.getContext('2d');
 var c_ship = shipCanvas.getContext('2d');
 var c_ammo = ammoCanvas.getContext('2d');
 class Ball {
-    constructor() {
+    constructor(y) {
         this.x = Math.floor(Math.random() * canvas.width); //anywhere on x axis
-        this.y = Math.floor(-1 + Math.random() * -30); //start anywhere between -1 and -30 on y axis
-        this.radius = Math.floor(5 + Math.random() * 10) //between 5 and 15 radius
-        this.speed = Math.floor(1 + Math.random() * 3) //between 1 and 3 speed
+        this.y = y; 
+        this.radius = Math.floor(5 + Math.random() * 7) //between 5 and 12 radius
+        this.speed = 1 + Math.random() * 1
     }
     animateBall() {
         if(this.y > canvas.height + 20) return;
@@ -28,11 +28,14 @@ class Ball {
 }
 
 var balls = [];
+for(var i = 0; i < (40 + Math.random() * 50); i++) {
+    balls.push(new Ball(Math.floor(Math.random() * canvas.height))); //start anywhere on the canvas
+}
 setInterval(() => {
-    for(var i = 0; i < (10 + Math.random() * 15); i++) {
-        balls.push(new Ball());
+    for(var i = 0; i < (4 + Math.random() * 7); i++) {
+        balls.push(new Ball(Math.floor(-1 + Math.random() * -30))); //start anywhere between -1 and -30 of y axis
     }
-}, 500)
+}, 1000)
 
 
 
@@ -48,7 +51,7 @@ class Ship {
         this.y = y;
         c_ship.clearRect(0, 0, canvas.width, canvas.height);
         c_ship.beginPath();
-        c_ship.fillStyle = "black";
+        c_ship.fillStyle = "white";
         c_ship.arc(x, y, 30, 0, 2 * Math.PI);
         c_ship.fill()
     }
@@ -64,12 +67,14 @@ class Ammo {
         this.x = x - 5;
         this.y = y - 60;
         this.speed = 3;
+        this.length = 10;
+        this.angleRadians = 270 * (Math.PI * 180)
     }
 
     animateAmmo() {
         if(this.y < 0) return;
         c_ammo.fillStyle = "#70ed09";
-        c_ammo.fillRect(this.x, this.y, 10, 30)
+        c_ammo.fillRect(this.x, this.y, this.length, 30)
         this.y-=this.speed;
     }
 }
@@ -90,10 +95,10 @@ window.requestAnimationFrame(drawAmmo);
 
 
 
-var ships = []
+var enemyShips = []
 
 setInterval(() => {
-    ships.push(new EnemyShip(canvas, ship))
+    enemyShips.push(new EnemyShip(canvas, ship))
 }, 1000)
 
 function drawFrame() {
@@ -101,11 +106,14 @@ function drawFrame() {
     balls.forEach((ball) => {
         ball.animateBall();
     })
-    ships.forEach((ship) => {
-        ship.move();
-        ship.missiles.forEach(missile => {
+    enemyShips.forEach((enemyShip) => {
+        enemyShip.move();
+        enemyShip.missiles.forEach(missile => {
             missile.move();
         })
+    })
+    enemyShips = enemyShips.filter(enemyShip => {
+        return !enemyShip.detectCollision(ammos);
     })
     window.requestAnimationFrame(drawFrame);
 }

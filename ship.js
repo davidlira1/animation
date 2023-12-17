@@ -22,7 +22,7 @@ class Ships {
 
 class EnemyShip extends Ships {
     missiles = [];
-    radius = 20;
+    radius = 45;
     constructor(canvas, playerShip) {
         var x = Math.floor(Math.random() * canvas.width);
         var y = 0 - Math.floor(Math.random() + 20);
@@ -42,7 +42,25 @@ class EnemyShip extends Ships {
     beginShootingInterval() {
         setInterval(() => {
             this.missiles.push(new DirectedMissile(this, this.playerShip));
-        }, 1500)
+        }, 2000)
+    }
+
+    detectCollision(playerMissiles) {
+        return playerMissiles.some(playerMissile => {
+            var missileEndPnt = {
+                x: playerMissile.x + playerMissile.length * Math.cos(playerMissile.angleRadians),
+                y: playerMissile.y - playerMissile.length * Math.sin(playerMissile.angleRadians)
+            }
+            var distance = Math.sqrt(Math.pow(missileEndPnt.x - this.x, 2) + Math.pow(missileEndPnt.y - this.y, 2));
+            if (distance < this.radius) {
+                return true;
+            } else {
+                return false;
+            }
+        })
+    }
+    
+    removeShip() {
     }
 }
 
