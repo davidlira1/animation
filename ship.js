@@ -42,7 +42,7 @@ class EnemyShip extends Ships {
     beginShootingInterval() {
         setInterval(() => {
             this.missiles.push(new DirectedMissile(this, this.playerShip));
-        }, 2000)
+        }, 1000)
     }
 
     detectCollision(playerMissiles) {
