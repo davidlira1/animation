@@ -34,21 +34,18 @@ setInterval(() => {
     }
 }, 500)
 
-function drawFrame() {
-    c.clearRect(0, 0, canvas.width, canvas.height);
-    balls.forEach((ball) => {
-        ball.animateBall();
-    })
-    window.requestAnimationFrame(drawFrame);
-}
-window.requestAnimationFrame(drawFrame);
+
 
 class Ship {
+    x;
+    y;
     constructor() {
         this.animateShip(canvas.width/2, canvas.height/2);
     }
 
     animateShip(x, y) {
+        this.x = x;
+        this.y = y;
         c_ship.clearRect(0, 0, canvas.width, canvas.height);
         c_ship.beginPath();
         c_ship.fillStyle = "black";
@@ -90,3 +87,26 @@ function drawAmmo() {
     window.requestAnimationFrame(drawAmmo);
 }
 window.requestAnimationFrame(drawAmmo);
+
+
+
+var ships = []
+
+setInterval(() => {
+    ships.push(new EnemyShip(canvas, ship))
+}, 1000)
+
+function drawFrame() {
+    c.clearRect(0, 0, canvas.width, canvas.height);
+    balls.forEach((ball) => {
+        ball.animateBall();
+    })
+    ships.forEach((ship) => {
+        ship.move();
+        ship.missiles.forEach(missile => {
+            missile.move();
+        })
+    })
+    window.requestAnimationFrame(drawFrame);
+}
+window.requestAnimationFrame(drawFrame);
