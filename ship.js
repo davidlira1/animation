@@ -22,6 +22,7 @@ class Ships {
 
 class EnemyShip extends Ships {
     missiles = [];
+    radius = 20;
     constructor(canvas, playerShip) {
         var x = Math.floor(Math.random() * canvas.width);
         var y = 0 - Math.floor(Math.random() + 20);
@@ -33,14 +34,14 @@ class EnemyShip extends Ships {
     move() {
         this.ctx.beginPath();
         this.ctx.fillStyle = "purple";
-        this.ctx.arc(this.x, this.y, 20, 0, 2 * Math.PI);
+        this.ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
         this.ctx.fill();
         this.y+= this.speed;
     }
 
     beginShootingInterval() {
         setInterval(() => {
-            this.missiles.push(new DirectedMissile(this.canvas, this.x, this.y, this.playerShip));
+            this.missiles.push(new DirectedMissile(this, this.playerShip));
         }, 1500)
     }
 }

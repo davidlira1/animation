@@ -1,10 +1,11 @@
 class Missile {
-    constructor(canvas, x, y, speed) {
-        this.x = x;
-        this.y = y;
+    constructor(ship, speed, target) {
+        this.x = ship.x;
+        this.y = ship.y;
         this.speed = speed;
-        this.canvas = canvas;
+        this.canvas = ship.canvas;
         this.ctx = canvas.getContext('2d');
+        this.target = target;
     }
 
     move() {
@@ -24,23 +25,24 @@ class BasicMissile extends Missile {
 }
 
 class DirectedMissile extends Missile {
-    constructor(canvas, x, y, playerShip) {
-        super(canvas, x, y, 5);
-        this.destinationX = playerShip.x;
-        this.destinationY = playerShip.y;
-        this.angleRadians = Math.atan2(this.y - this.destinationY, this.destinationX - this.x);
-
+    constructor(ship, target) {
+        super(ship, 5, target);
+        this.angleRadians = Math.atan2(this.y - this.target.y, this.target.x - this.x);
+        this.x += ship.radius * Math.cos(this.angleRadians);
+        this.y -= ship.radius * Math.sin(this.angleRadians);
+        this.ship = ship;
+        this.length = 30;
+        this.width = 10;
     }
 
     move() {
-        console.log('move')
         this.ctx.fillStyle = "red";
         this.ctx.save();
         this.ctx.translate(this.x, this.y);
-        this.ctx.rotate(this.angleRadians);
-        this.ctx.fillRect(0, 0, 10, 30)
+        this.ctx.rotate(this.angleRadians > 0 ? (2 * Math.PI - this.angleRadians) : -this.angleRadians);
+        this.ctx.fillRect(0, 0 - this.width/2, this.length, this.width);
         this.ctx.restore();
-        this.y-=this.speed * Math.sin(this.angleRadians);
         this.x+=this.speed * Math.cos(this.angleRadians);
+        this.y-=this.speed * Math.sin(this.angleRadians);
     }
 }
